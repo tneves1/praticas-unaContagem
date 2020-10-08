@@ -356,3 +356,433 @@ class Home extends StatelessWidget {
     );
   }
 }
+
+---------------------------------------------------------------------------------------
+
+PRATICA 09
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: Home()));
+
+class Home extends StatefulWidget {
+  @override
+  HomeState createState() {
+    return HomeState();
+  }
+}
+
+class HomeState extends State<Home> {
+  int numeroVezes = 0;
+  String mensagem =
+      "Número de vezes em que o botão foi pressionado: 0.\nEsse número é par";
+
+  void cliqueDoBotao() {
+    numeroVezes = numeroVezes + 1;
+    mensagem =
+        "Número de vezes em que o botão foi pressionado: $numeroVezes.\nEsse número é ${numeroVezes % 2 == 0 ? "par" : "ímpar"}";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Pagina Inicial"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("$mensagem."),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(cliqueDoBotao);
+        },
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+--------------------------------------------------------------------------------------------------
+
+PRATICA 10 - PARTE 1
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: Home()));
+
+class Home extends StatefulWidget {
+  HomeState createState() {
+    return HomeState();
+  }
+}
+
+class HomeState extends State<Home> {
+  TextEditingController num01Controller = TextEditingController();
+  TextEditingController num02Controller = TextEditingController();
+  String resp = "";
+
+  somar() {
+    double num01 = double.tryParse(this.num01Controller.text);
+    double num02 = double.tryParse(this.num02Controller.text);
+    double soma = num01 + num02;
+    this.resp = '$num01 + $num02 = $soma';
+    return this.resp;
+  }
+
+  subtrair() {
+    double num01 = double.tryParse(this.num01Controller.text);
+    double num02 = double.tryParse(this.num02Controller.text);
+    double subtracao = num01 - num02;
+    this.resp = '$num01 - $num02 = $subtracao';
+    return this.resp;
+  }
+
+  multiplicar() {
+    double num01 = double.tryParse(this.num01Controller.text);
+    double num02 = double.tryParse(this.num02Controller.text);
+    double multiplicacao = num01 * num02;
+    this.resp = '$num01 x $num02 = $multiplicacao';
+    return this.resp;
+  }
+
+  dividir() {
+    double num01 = double.tryParse(this.num01Controller.text);
+    double num02 = double.tryParse(this.num02Controller.text);
+    double divisao = num01 / num02;
+    this.resp = '$num01 / $num02 = $divisao';
+    return this.resp;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Página Inicial'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: Text(''),
+            ),
+            Container(
+              height: 30,
+              child: Text(
+                'CALCULADORA',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num01Controller,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => num01Controller.clear(),
+                    icon: Icon(Icons.clear),
+                  ),
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe o primeiro número',
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num02Controller,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => num01Controller.clear(),
+                    icon: Icon(Icons.clear),
+                  ),
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe o segundo número',
+                ),
+              ),
+            ),
+            RaisedButton(
+              onPressed: () {
+                print(somar());
+                setState(somar);
+              },
+              child: Text("SOMAR",
+                  style: TextStyle(color: Colors.white, fontSize: 20.0)),
+              color: Colors.lightBlue,
+            ),
+            RaisedButton(
+              onPressed: () {
+                print(subtrair());
+                setState(subtrair);
+              },
+              child: Text("SUBTRAIR",
+                  style: TextStyle(color: Colors.white, fontSize: 20.0)),
+              color: Colors.lightBlue,
+            ),
+            RaisedButton(
+              onPressed: () {
+                print(multiplicar());
+                setState(multiplicar);
+              },
+              child: Text("MULTIPLICAR",
+                  style: TextStyle(color: Colors.white, fontSize: 20.0)),
+              color: Colors.lightBlue,
+            ),
+            RaisedButton(
+              onPressed: () {
+                print(dividir());
+                setState(dividir);
+              },
+              child: Text("DIVIDIR",
+                  style: TextStyle(color: Colors.white, fontSize: 20.0)),
+              color: Colors.lightBlue,
+            ),
+            Text(
+              this.resp,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+---------------------------------------------------------------------------------
+
+PRATICA 10 - PARTE 2
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: Home()));
+
+class Home extends StatefulWidget {
+  HomeState createState() {
+    return HomeState();
+  }
+}
+
+class HomeState extends State<Home> {
+  TextEditingController num01Controller = TextEditingController();
+  TextEditingController num02Controller = TextEditingController();
+  String resp = "";
+  void _resetFields() {
+    num01Controller.text = "";
+    num02Controller.text = "";
+  }
+
+  calcularIMC() {
+    double peso = double.tryParse(this.num01Controller.text);
+    double altura = double.tryParse(this.num02Controller.text);
+    double imc = peso / (altura * altura);
+    imc = double.parse(imc.toString());
+    String imc_arredondado = imc.toStringAsPrecision(4);
+    this.resp = 'SEU IMC = $imc_arredondado';
+    return this.resp;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pagina Inicial'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.refresh), onPressed: _resetFields),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: Text(''),
+            ),
+            Container(
+              height: 30,
+              child: Text(
+                'CALCULADORA IMC',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num01Controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe o seu peso',
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num02Controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe a sua altura',
+                ),
+              ),
+            ),
+            RaisedButton(
+              onPressed: () {
+                print(calcularIMC());
+                setState(calcularIMC);
+              },
+              child: Text("CALCULAR",
+                  style: TextStyle(color: Colors.white, fontSize: 20.0)),
+              color: Colors.lightBlue,
+            ),
+            Text(
+              this.resp,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Image.network(
+                'https://uploaddeimagens.com.br/images/002/913/001/full/IMC.png?1602187146'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+----------------------------------------------------------------------------------------------------
+
+PRATICA 10 - PARTE 3
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MaterialApp(home: Home()));
+
+class Home extends StatefulWidget {
+  HomeState createState() {
+    return HomeState();
+  }
+}
+
+class HomeState extends State<Home> {
+  TextEditingController num01Controller = TextEditingController();
+  TextEditingController num02Controller = TextEditingController();
+  TextEditingController num03Controller = TextEditingController();
+  String resp = "";
+  void _resetFields() {
+    num01Controller.text = "";
+    num02Controller.text = "";
+    num03Controller.text = "";
+  }
+
+  calcularVolume() {
+    double comprimento = double.tryParse(this.num01Controller.text);
+    double largura = double.tryParse(this.num02Controller.text);
+    double altura = double.tryParse(this.num03Controller.text);
+    double volume = comprimento * largura * altura;
+    volume = double.parse(volume.toString());
+    String volume_arredondado = volume.toStringAsPrecision(4);
+    this.resp = 'O volume do Paralelepípedo = $volume_arredondado';
+    return this.resp;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pagina Inicial'),
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.refresh), onPressed: _resetFields),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: Text(' '),
+            ),
+            Container(
+              height: 30,
+              child: Text(
+                'Calculadora de Volume de um Paralelepípedo',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num01Controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe o comprimento',
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num02Controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe a largura',
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: num03Controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Informe a altura',
+                ),
+              ),
+            ),
+            RaisedButton(
+              onPressed: () {
+                print(calcularVolume());
+                setState(calcularVolume);
+              },
+              child: Text("CALCULAR",
+                  style: TextStyle(color: Colors.white, fontSize: 20.0)),
+              color: Colors.lightBlue,
+            ),
+            Text(
+              this.resp,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Container(
+              height: 180,
+              child: Image.network(
+                'https://uploaddeimagens.com.br/images/002/913/026/full/Capturar.PNG?1602187626',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
