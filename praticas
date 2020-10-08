@@ -648,12 +648,15 @@ class HomeState extends State<Home> {
                   style: TextStyle(color: Colors.white, fontSize: 20.0)),
               color: Colors.lightBlue,
             ),
-            Text(
-              this.resp,
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
+            Container(
+              height: 38,
+              child: Text(
+                this.resp,
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             Image.network(
@@ -695,9 +698,7 @@ class HomeState extends State<Home> {
     double largura = double.tryParse(this.num02Controller.text);
     double altura = double.tryParse(this.num03Controller.text);
     double volume = comprimento * largura * altura;
-    volume = double.parse(volume.toString());
-    String volume_arredondado = volume.toStringAsPrecision(4);
-    this.resp = 'O volume do Paralelepípedo = $volume_arredondado';
+    this.resp = 'Volume = $volume';
     return this.resp;
   }
 
@@ -786,3 +787,4 @@ class HomeState extends State<Home> {
     );
   }
 }
+
