@@ -2336,16 +2336,16 @@ class HomeState extends State<Home> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.photo_camera),
-            title: Text('Animais'), //substituir por -> label: 'Cursos',
+            title: Text('Animais'), 
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.app_settings_alt),
             title:
-                Text('Programação'), //substituir por -> label: 'Consultoria',
+                Text('Programação'), 
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.warning_rounded),
-            title: Text('Avaliação'), //substituir por -> label: 'Avaliação',
+            title: Text('Avaliação'), 
           ),
         ],
         currentIndex: this.indice,
