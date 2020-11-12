@@ -1221,3 +1221,1137 @@ class SegundaRota extends StatelessWidget {
     );
   }
 }
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 16
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(
+      MaterialApp(
+        home: PrimeiraRota(),
+      ),
+    );
+
+class Preco {
+  double etanol;
+  double gasolina;
+  Preco(this.etanol, this.gasolina);
+  razao() => etanol / gasolina;
+}
+
+class PrimeiraRota extends StatelessWidget {
+  final TextEditingController etanolController = TextEditingController();
+  final TextEditingController gasolinaController = TextEditingController();
+  Preco preco;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Primeiro Rota'),
+      ),
+      body: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextField(
+              controller: etanolController,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () => etanolController.clear(),
+                  icon: Icon(Icons.clear),
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'informe o preço do Etanol',
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextField(
+              controller: gasolinaController,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () => etanolController.clear(),
+                  icon: Icon(Icons.clear),
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'informe o preço da gasolina',
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              preco = Preco(double.tryParse(etanolController.text),
+                  double.tryParse(gasolinaController.text));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SegundaRota(preco)));
+            },
+            child: Text('Ir para a Segunda Rota'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SegundaRota extends StatelessWidget {
+  final Preco preco;
+
+  SegundaRota(this.preco);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Segunda Rota'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              '${preco.etanol.toStringAsFixed(2)} / ${preco.gasolina.toStringAsFixed(2)} = ${preco.razao().toStringAsFixed(2)}',
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              '${preco.razao() < 0.70 ? "Melhor etanol" : "Melhor gasolina"}',
+              style: TextStyle(
+                fontSize: 25,
+                color: Colors.blue,
+              ),
+            ),
+            ElevatedButton(
+              child: Text('Ir para a Primeira Rota'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 17 - EXERCICIO 1
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MeuAplicativo());
+
+class Temperatura {
+  double celsius;
+  Temperatura(this.celsius);
+  conversao() => celsius * 1.8 + 32;
+}
+
+class MeuAplicativo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: PrimeiraRota(),
+      routes: {
+        RotaGenerica.caminhoDaRota: (context) => RotaGenerica(),
+      },
+    );
+  }
+}
+
+class PrimeiraRota extends StatelessWidget {
+  TextEditingController celsiusController = TextEditingController();
+  Temperatura temperatura;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Primeira Rota'),
+        ),
+        body: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(10),
+              child: TextField(
+                controller: celsiusController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () => celsiusController.clear(),
+                    icon: Icon(Icons.clear),
+                  ),
+                  border: OutlineInputBorder(),
+                  labelText: 'temperatura em graus Celsius',
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                child: Text("Navegar para a Segunda Rota"),
+                onPressed: () {
+                  temperatura =
+                      Temperatura(double.tryParse(celsiusController.text));
+                  Navigator.pushNamed(
+                    context,
+                    RotaGenerica.caminhoDaRota,
+                    arguments: ArgumentosDaRota(
+                        'Segunda Rota',
+                        'Segunda Rota',
+                        'Graus Celsius: ${temperatura.celsius.toStringAsFixed(2)}',
+                        'Graus Fahrenheit: ${temperatura.conversao().toStringAsFixed(2)}'),
+                  );
+                },
+              ),
+            ),
+          ],
+        ));
+  }
+}
+
+class RotaGenerica extends StatelessWidget {
+  static const caminhoDaRota = '/rotaGenerica';
+  Temperatura temperatura;
+
+  @override
+  Widget build(BuildContext context) {
+    ArgumentosDaRota argumentos = ModalRoute.of(context).settings.arguments;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(argumentos.titulo),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.all(100),
+              child: Text(
+                argumentos.mensagem,
+                style: TextStyle(
+                  fontSize: 23,
+                  color: Colors.green,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(50),
+              child: Text(
+                argumentos.mensagem2,
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ArgumentosDaRota {
+  String titulo;
+  String titulo2;
+  String mensagem;
+  String mensagem2;
+
+  ArgumentosDaRota(this.titulo, this.titulo2, this.mensagem, this.mensagem2);
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 17 - EXERCICIO 2
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MeuAplicativo());
+
+class MeuAplicativo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: PrimeiraRota(),
+      routes: {
+        SegundaRota.caminhoDaRota: (context) => SegundaRota(),
+        TerceiraRota.caminhoDaRota: (context) => TerceiraRota(),
+      },
+    );
+  }
+}
+
+class PrimeiraRota extends StatelessWidget {
+  final TextEditingController valorEmRealController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Valor em Real'),
+      ),
+      body: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextField(
+              controller: valorEmRealController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () => valorEmRealController.clear(),
+                  icon: Icon(Icons.clear),
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'Informe o valor em Real',
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: ElevatedButton.icon(
+              label: const Text('Proximo'),
+              icon: Icon(Icons.navigate_next),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  SegundaRota.caminhoDaRota,
+                  arguments: ArgumentosDaRota('Cotação', double.tryParse(this.valorEmRealController.text))
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SegundaRota extends StatelessWidget {
+  static const caminhoDaRota = '/SegundaRota';
+
+  final TextEditingController cotacaoDolarController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    ArgumentosDaRota argumentos = ModalRoute.of(context).settings.arguments;
+    double real = argumentos.valor;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Cotação'),
+      ),
+      body: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.all(10),
+            child: TextField(
+              controller: cotacaoDolarController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  onPressed: () => cotacaoDolarController.clear(),
+                  icon: Icon(Icons.clear),
+                ),
+                border: OutlineInputBorder(),
+                labelText: 'Informe cotação do Dólar',
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.all(10),
+            child: ElevatedButton(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(5, 7, 0, 7),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('Próximo'),
+                    Icon(
+                      Icons.navigate_next,
+                    )
+                  ],
+                ),
+              ),
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  TerceiraRota.caminhoDaRota,
+                  arguments: ArgumentosSegundaRota('Resultado', real,
+                      double.tryParse(this.cotacaoDolarController.text)),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class TerceiraRota extends StatelessWidget {
+  static const caminhoDaRota = '/TerceiraRota';
+
+  @override
+  Widget build(BuildContext context) {
+    ArgumentosSegundaRota argumentos =
+        ModalRoute.of(context).settings.arguments;
+    double resultado = argumentos.valorReal / argumentos.valorDolar;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(argumentos.titulo),
+      ),
+      body: Center(
+          child: Container(
+        height: 40,
+        child: Text(
+          """R\$ ${argumentos.valorReal.toStringAsFixed(2)} = US\$ ${resultado.toStringAsFixed(2)}""",
+          style: TextStyle(
+            color: Colors.orange,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      )),
+    );
+  }
+}
+
+class ArgumentosDaRota {
+  String titulo;
+  double valor;
+  ArgumentosDaRota(this.titulo, this.valor);
+}
+
+class ArgumentosSegundaRota {
+  String titulo;
+  double valorReal;
+  double valorDolar;
+  ArgumentosSegundaRota(this.titulo, this.valorReal, this.valorDolar);
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 18 - EXERCICIO 1
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MeuAplicativo2());
+
+class MeuAplicativo2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: PrimeiraRota(), routes: {
+      RotaGenerica.caminhoDaRota: (context) => RotaGenerica(),
+    });
+  }
+}
+
+class PrimeiraRota extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Primeira Rota'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.blueAccent),
+              accountName: Text("Ana"),
+              accountEmail: Text("ana@ana.com.br"),
+              currentAccountPicture: CircleAvatar(
+                radius: 30.0,
+                backgroundImage: NetworkImage(
+                    'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.video_collection),
+              title: Text("Rota 02"),
+              subtitle: Text("Siga para a Rota 02"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                print('Ir para a Rota 02');
+                Navigator.pushNamed(
+                  context,
+                  RotaGenerica.caminhoDaRota,
+                  arguments: ArgumentosDaRota(
+                    'Segunda Rota',
+                    'Segunda Rota',
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text("Rota 03"),
+              subtitle: Text("Siga para a Rota 03"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                print('Ir para a Rota 03.');
+                Navigator.pushNamed(
+                  context,
+                  RotaGenerica.caminhoDaRota,
+                  arguments: ArgumentosDaRota(
+                    'Terceira Rota',
+                    'Terceira Rota',
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Rota 01"),
+              subtitle: Text("Voltar para a Rota 01"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                print('Voltar para a Rota 01');
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RotaGenerica extends StatelessWidget {
+  static const caminhoDaRota = '/rotaGenerica';
+  @override
+  Widget build(BuildContext context) {
+    ArgumentosDaRota argumentos = ModalRoute.of(context).settings.arguments;
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(argumentos.titulo),
+        ),
+        body: Container(
+          margin: EdgeInsets.only(top: 60, left: 50, right: 50),
+          child: Column(
+            children: [
+              Container(
+                child: Text(
+                  argumentos.mensagem,
+                  style: TextStyle(
+                    fontSize: 33,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 80,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                child: ButtonTheme(
+                  height: 80.0,
+                  minWidth: 300.0,
+                  child: FlatButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Voltar para a Primeira Rota",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class ArgumentosDaRota {
+  String titulo;
+  String mensagem;
+
+  ArgumentosDaRota(this.titulo, this.mensagem);
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 18 - EXERCICIO 2
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MeuAplicativo2());
+
+class MeuAplicativo2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: PrimeiraRota(), routes: {
+      RotaGenerica.caminhoDaRota: (context) => RotaGenerica(),
+    });
+  }
+}
+
+class PrimeiraRota extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Primeira Rota'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.red),
+              accountName: Text("Ana"),
+              accountEmail: Text("ana@ana.com.br"),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Text(
+                  "A",
+                  style: TextStyle(fontSize: 40.0, color: Colors.red),
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.video_collection),
+              title: Text("Rota 02"),
+              subtitle: Text("Siga para a Rota 02"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                print('Ir para a Rota 02');
+                Navigator.pushNamed(
+                  context,
+                  RotaGenerica.caminhoDaRota,
+                  arguments: ArgumentosDaRota(
+                    'Segunda Rota',
+                    'Segunda Rota',
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text("Rota 03"),
+              subtitle: Text("Siga para a Rota 03"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                print('Ir para a Rota 03.');
+                Navigator.pushNamed(
+                  context,
+                  RotaGenerica.caminhoDaRota,
+                  arguments: ArgumentosDaRota(
+                    'Terceira Rota',
+                    'Terceira Rota',
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Rota 01"),
+              subtitle: Text("Voltar para a Rota 01"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                print('Voltar para a Rota 01');
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RotaGenerica extends StatelessWidget {
+  static const caminhoDaRota = '/rotaGenerica';
+  @override
+  Widget build(BuildContext context) {
+    ArgumentosDaRota argumentos = ModalRoute.of(context).settings.arguments;
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(argumentos.titulo),
+        ),
+        body: Container(
+          margin: EdgeInsets.only(top: 60, left: 50, right: 50),
+          child: Column(
+            children: [
+              Container(
+                child: Text(
+                  argumentos.mensagem,
+                  style: TextStyle(
+                    fontSize: 33,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 80,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                ),
+                child: ButtonTheme(
+                  height: 80.0,
+                  minWidth: 300.0,
+                  child: FlatButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Voltar para a Primeira Rota",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
+}
+
+class ArgumentosDaRota {
+  String titulo;
+  String mensagem;
+
+  ArgumentosDaRota(this.titulo, this.mensagem);
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 18 - EXERCICIO 3
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(MeuAplicativo2());
+
+class MeuAplicativo2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: PrimeiraRota(),
+    );
+  }
+}
+
+class PrimeiraRota extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Primeira Rota'),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.amber,
+          child: ListView(
+            children: [
+              UserAccountsDrawerHeader(
+                decoration: BoxDecoration(color: Colors.red),
+                accountName: Text("Ana"),
+                accountEmail: Text("ana@ana.com.br"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: Text(
+                    "A",
+                    style: TextStyle(fontSize: 40.0, color: Colors.red),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.video_collection),
+                title: Text("Rota 02"),
+                subtitle: Text("Siga para a Rota 02"),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () {
+                  print('Ir para a Rota 02');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RotaGenerica(
+                        "Segunda Rota",
+                        Colors.black,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.favorite),
+                title: Text("Rota 03"),
+                subtitle: Text("Siga para a Rota 03"),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () {
+                  print('Ir para a Rota 03.');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RotaGenerica(
+                        "Terceira Rota",
+                        Colors.purple[900],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text("Rota 01"),
+                subtitle: Text("Voltar para a Rota 01"),
+                trailing: Icon(Icons.arrow_forward),
+                onTap: () {
+                  print('Voltar para a Rota 01');
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Center(
+        child: const Text('Corpo'),
+      ),
+    );
+  }
+}
+
+class RotaGenerica extends StatelessWidget {
+  final String titulo;
+  final Color cor;
+  RotaGenerica(this.titulo, this.cor);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${this.titulo}'),
+      ),
+      body: Container(
+        color: this.cor,
+        child: Center(
+          child: Column(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.all(70),
+                  child: Text(
+                    '${this.titulo}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                        fontSize: 30),
+                  )),
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue[900],
+                  ),
+                  padding: EdgeInsets.all(35.50),
+                  child: Text(
+                    'Voltar para a primeira tela',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 19
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MeuAplicativo());
+}
+
+class MeuAplicativo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: PrimeiraRota(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class PrimeiraRota extends StatefulWidget {
+  @override
+  _PrimeiraRotaState createState() => _PrimeiraRotaState();
+}
+
+class _PrimeiraRotaState extends State<PrimeiraRota> {
+  Transporte transporte = transportes[0];
+
+  void selecionar(Transporte transporteEscolhido) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => RotaGenerica(transporteEscolhido)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.video_collection),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SegundaRota()),
+            );
+          },
+          tooltip: 'Coleção de Vídeos',
+        ),
+        title: Text('Primeira Rota'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(transportes[0].icone),
+            onPressed: () {
+              selecionar(transportes[0]);
+            },
+          ),
+          IconButton(
+            icon: Icon(transportes[1].icone),
+            onPressed: () {
+              selecionar(transportes[1]);
+            },
+          ),
+          PopupMenuButton<Transporte>(
+            onSelected: selecionar,
+            itemBuilder: (BuildContext context) {
+              return transportes.skip(2).map(
+                (Transporte transporte) {
+                  return PopupMenuItem<Transporte>(
+                    value: transporte,
+                    child: Text(transporte.titulo),
+                  );
+                },
+              ).toList();
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Cartao(transporte: this.transporte),
+      ),
+    );
+  }
+}
+
+class SegundaRota extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Segunda Rota"),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Voltar para a Primeira Rota'),
+        ),
+      ),
+    );
+  }
+}
+
+class Transporte {
+  final String titulo;
+  final IconData icone;
+  const Transporte({this.titulo, this.icone});
+}
+
+const List<Transporte> transportes = <Transporte>[
+  Transporte(titulo: 'Carro', icone: Icons.directions_car),
+  Transporte(titulo: 'Bicicleta', icone: Icons.directions_bike),
+  Transporte(titulo: 'Barco', icone: Icons.directions_boat),
+  Transporte(titulo: 'Ônibus', icone: Icons.directions_bus),
+  Transporte(titulo: 'Trem', icone: Icons.directions_railway),
+];
+
+class RotaGenerica extends StatelessWidget {
+  final Transporte transporte;
+  RotaGenerica(this.transporte);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${this.transporte.titulo}'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Container(
+              child: Cartao(transporte: this.transporte),
+            ),
+            Container(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Voltar para a Primeira Rota'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Cartao extends StatelessWidget {
+  final Transporte transporte;
+  Cartao({this.transporte});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              this.transporte.icone,
+              size: 128,
+              color: Colors.grey[500],
+            ),
+            Text(
+              this.transporte.titulo,
+              style: TextStyle(
+                fontSize: 40,
+                color: Colors.grey[500],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+---------------------------------------------------------------------------------------------------
+
+PRATICA 20
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(Aplicativo());
+
+class Aplicativo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Home(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Home extends StatefulWidget {
+  @override
+  HomeState createState() => HomeState();
+}
+
+class HomeState extends State<Home> {
+  int indice = 0;
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static const List<Widget> telas = <Widget>[
+    Image(
+      image: NetworkImage(
+          'https://images.unsplash.com/photo-1547721064-da6cfb341d50'),
+    ),
+    Image(
+      image: NetworkImage(
+          'https://flutter.io/images/catalog-widget-placeholder.png'),
+    ),
+    Image(
+      image: NetworkImage(
+          'https://images.pexels.com/photos/213780/pexels-photo-213780.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
+    ),
+  ];
+  void selecionar(int indice) {
+    setState(
+      () {
+        this.indice = indice;
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Página Inicial'),
+      ),
+      body: Center(
+        child: telas.elementAt(this.indice),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.photo_camera),
+            title: Text('Animais'), //substituir por -> label: 'Cursos',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.app_settings_alt),
+            title:
+                Text('Programação'), //substituir por -> label: 'Consultoria',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.warning_rounded),
+            title: Text('Avaliação'), //substituir por -> label: 'Avaliação',
+          ),
+        ],
+        currentIndex: this.indice,
+        selectedItemColor: Colors.amber[800],
+        onTap: selecionar,
+      ),
+    );
+  }
+}
